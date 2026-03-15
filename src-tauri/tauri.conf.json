@@ -38,7 +38,9 @@
         "signingIdentity": null,
         "providerBundleIdentifier": null
       },
-      "resources": [],
+      "resources": [
+        "prompts.yaml"
+      ],
       "shortDescription": "",
       "targets": "all",
       "windows": {

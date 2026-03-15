@@ -1,5 +1,31 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use thiserror::Error;
+
+/// アプリケーション固有のエラー型
+#[derive(Debug, Error, Serialize)]
+pub enum AppError {
+    #[error("API error: {0}")]
+    ApiError(String),
+    #[error("Game error: {0}")]
+    GameError(String),
+    #[error("Config error: {0}")]
+    ConfigError(String),
+    #[error("IO error: {0}")]
+    IoError(String),
+}
+
+impl From<reqwest::Error> for AppError {
+    fn from(e: reqwest::Error) -> Self {
+        AppError::ApiError(e.to_string())
+    }
+}
+
+impl From<std::io::Error> for AppError {
+    fn from(e: std::io::Error) -> Self {
+        AppError::IoError(e.to_string())
+    }
+}
 
 /// カードの種類
 #[derive(Debug, Serialize, Deserialize, Clone, PartialEq)]

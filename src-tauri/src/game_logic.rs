@@ -1,5 +1,5 @@
 use crate::ai_client::GeminiClient;
-use crate::models::{Card, GameState, AttackJudgement, DefenseJudgement};
+use crate::models::{AppError, Card, GameState, AttackJudgement};
 use rand::seq::SliceRandom;
 
 /// ゲームのターンフェーズ
@@ -71,8 +71,8 @@ impl GameLogic {
 
     /// 攻撃ターンを実行する
     /// AIによる判定を行い、ゲージを更新する
-    pub async fn play_attack_turn(&mut self, claim: Card, reason: Card, fact: Card, is_player_turn: bool) -> Result<(AttackJudgement, bool), String> {
-        let state = self.state.as_mut().ok_or("Game not started")?;
+    pub async fn play_attack_turn(&mut self, claim: Card, reason: Card, fact: Card, is_player_turn: bool) -> Result<(AttackJudgement, bool), AppError> {
+        let state = self.state.as_mut().ok_or_else(|| AppError::GameError("Game not started".to_string()))?;
         
         // AIによる攻撃の判定
         let result = self.ai_client.judge_attack(&state.theme, &state.history, &claim.text, &reason.text, &fact.text).await?;
